@@ -1,8 +1,9 @@
 use relm4;
 use relm4::actions::AccelsPlus;
 use relm4::actions::{RelmAction, RelmActionGroup};
+use relm4::gtk;
 use relm4::gtk::gio::Menu;
-use relm4::gtk::{prelude::ApplicationExt, Application};
+use relm4::gtk::prelude::ApplicationExt;
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
 relm4::new_stateless_action!(PreferencesAction, WindowActionGroup, "preferences");
@@ -28,7 +29,10 @@ pub fn primary_menu() -> Menu {
     primary_menu
 }
 
-pub fn init_primary_menu_actions(app: &Application) -> RelmActionGroup<WindowActionGroup> {
+pub fn init_primary_menu<W>(widget: W)
+where
+    W: AsRef<gtk::Widget>,
+{
     let actions = {
         let mut actions = RelmActionGroup::<WindowActionGroup>::new();
 
@@ -48,19 +52,16 @@ pub fn init_primary_menu_actions(app: &Application) -> RelmActionGroup<WindowAct
             todo!();
         }));
 
-        {
-            let app = app.clone();
-            actions.add_action(RelmAction::<QuitAction>::new_stateless(move |_| {
-                app.quit();
-            }));
-        }
+        actions.add_action(RelmAction::<QuitAction>::new_stateless(move |_| {
+            relm4::main_application().quit();
+        }));
 
         actions
     };
 
-    app.set_accelerators_for_action::<ShortcutsAction>(&["<Ctrl>question"]);
-    app.set_accelerators_for_action::<HelpAction>(&["F1"]);
-    app.set_accelerators_for_action::<QuitAction>(&["<Ctrl>q"]);
+    relm4::main_application().set_accelerators_for_action::<ShortcutsAction>(&["<Ctrl>question"]);
+    relm4::main_application().set_accelerators_for_action::<HelpAction>(&["F1"]);
+    relm4::main_application().set_accelerators_for_action::<QuitAction>(&["<Ctrl>q"]);
 
-    actions
+    actions.register_for_widget(widget);
 }

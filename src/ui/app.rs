@@ -1,8 +1,7 @@
 use crate::password_store::{PasswordEntry, PasswordStore};
 use crate::ui::password_entry_page::{PasswordEntryPage, PasswordEntryPageInit};
 use crate::ui::password_list_page::{PasswordListOutputs, PasswordListPage, PasswordListPageInit};
-use crate::ui::primary_menu::WindowActionGroup;
-use relm4::actions::RelmActionGroup;
+use crate::ui::primary_menu::init_primary_menu;
 use relm4::adw;
 use relm4::adw::prelude::*;
 use relm4::prelude::*;
@@ -12,10 +11,6 @@ use std::env;
 pub enum Pages {
     PasswordListPage(Controller<PasswordListPage>),
     PasswordEntryPage(Controller<PasswordEntryPage>),
-}
-
-pub struct AppInit {
-    pub actions: RelmActionGroup<WindowActionGroup>,
 }
 
 pub struct App {
@@ -32,7 +27,7 @@ pub enum AppInputs {
 
 #[relm4::component(pub)]
 impl Component for App {
-    type Init = AppInit;
+    type Init = ();
     type Input = AppInputs;
     type Output = ();
     type CommandOutput = ();
@@ -50,7 +45,7 @@ impl Component for App {
     }
 
     fn init(
-        init: Self::Init,
+        _init: Self::Init,
         _root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
@@ -63,7 +58,7 @@ impl Component for App {
         };
 
         let widgets = view_output!();
-        init.actions.register_for_widget(&widgets.main_window);
+        init_primary_menu(&widgets.main_window);
 
         sender.input(AppInputs::OpenPasswordsSubdir(String::from(".")));
 

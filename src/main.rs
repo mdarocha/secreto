@@ -1,8 +1,7 @@
 mod password_store;
 mod ui;
 
-use crate::ui::app::{App, AppInit};
-use crate::ui::primary_menu::init_primary_menu_actions;
+use crate::ui::app::App;
 use relm4::{
     gtk,
     gtk::{gdk, gio, prelude::*},
@@ -29,12 +28,8 @@ fn main() {
     // Init icons
     init_icons();
 
-    // Init actions
-    let actions = init_primary_menu_actions(&app);
-
     // Setup and start relm app
     let app = RelmApp::from_app(app);
 
-    app.visible_on_activate(false)
-        .run::<App>(AppInit { actions });
+    app.visible_on_activate(false).run::<App>(());
 }
