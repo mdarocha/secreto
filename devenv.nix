@@ -5,6 +5,7 @@ let
 in
 {
   env = {
+    APP_NAME = "Secreto";
     APP_ID = "pl.mdarocha.Secreto";
   };
 
@@ -12,6 +13,8 @@ in
     gtk4.dev
     libadwaita.dev
     pango.dev
+    libgpg-error.dev
+    gpgme.dev
   ];
 
   languages.rust.enable = true;

@@ -1,4 +1,4 @@
-use crate::password_store::PasswordItem;
+use crate::password_store::{PasswordItem, PasswordEntry, PasswordStore};
 use crate::ui::password_item_view::PasswordItemViewOutputs;
 use relm4::adw::prelude::*;
 use relm4::factory::FactoryVecDeque;
@@ -6,12 +6,12 @@ use relm4::prelude::*;
 use relm4::{adw, gtk};
 
 pub struct PasswordListPageInit {
-    pub store_dir: String,
+    pub store: PasswordStore,
     pub subdir: String,
 }
 
 pub struct PasswordListPage {
-    store_dir: String,
+    store: PasswordStore,
     subdir: String,
     passwords: FactoryVecDeque<PasswordItem>,
 }
@@ -25,6 +25,7 @@ pub enum PasswordListInputs {
 #[derive(Debug)]
 pub enum PasswordListOutputs {
     OpenSubdir(String),
+    OpenEntry(PasswordEntry),
 }
 
 #[derive(Debug)]
@@ -42,7 +43,11 @@ impl Component for PasswordListPage {
     view! {
         adw::NavigationPage {
             #[watch]
-            set_title: &model.subdir,
+            set_title: if &model.subdir == "." {
+                env!("APP_NAME")
+            } else {
+                &model.subdir
+            },
 
             adw::ToolbarView {
                 set_top_bar_style: adw::ToolbarStyle::Raised,
@@ -87,7 +92,7 @@ impl Component for PasswordListPage {
             });
 
         let model = Self {
-            store_dir: init.store_dir,
+            store: init.store.clone(),
             subdir: init.subdir,
             passwords,
         };
@@ -103,11 +108,11 @@ impl Component for PasswordListPage {
     fn update(&mut self, message: Self::Input, sender: ComponentSender<Self>, _root: &Self::Root) {
         match message {
             PasswordListInputs::LoadPasswordList => {
-                let store_dir = self.store_dir.clone();
+                let store = self.store.clone();
                 let subdir = self.subdir.clone();
                 sender.spawn_oneshot_command(move || {
                     let password_list = {
-                        match crate::password_store::list(&store_dir, &subdir) {
+                        match store.list(&subdir) {
                             Ok(passwords) => passwords,
                             Err(_) => todo!(),
                         }
@@ -122,8 +127,12 @@ impl Component for PasswordListPage {
                         sender
                             .output(PasswordListOutputs::OpenSubdir(directory.path.clone()))
                             .expect("No receivers!");
-                    }
-                    Some(PasswordItem::Entry(entry)) => {}
+                    },
+                    Some(PasswordItem::Entry(entry)) => {
+                        sender
+                            .output(PasswordListOutputs::OpenEntry(entry.clone()))
+                            .expect("No receivers!");
+                    },
                     None => {}
                 }
             }

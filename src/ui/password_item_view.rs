@@ -25,8 +25,8 @@ impl FactoryComponent for PasswordItem {
             },
 
             set_subtitle: match self {
-                PasswordItem::Directory(entry) => &entry.path,
-                PasswordItem::Entry(entry) => &entry.path
+                PasswordItem::Directory(_) => "2 items", // TODO make this work
+                PasswordItem::Entry(_) => ""
             },
 
             add_prefix: &gtk::Image::from_icon_name(match self {
