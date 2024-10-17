@@ -1,5 +1,5 @@
-use std::{fs, fs::File, path::Path, collections::HashMap, clone::Clone, error::Error};
 use gpgme::{Context, Protocol};
+use std::{clone::Clone, collections::HashMap, error::Error, fs, fs::File, path::Path};
 
 #[derive(Debug)]
 pub enum PasswordItem {
@@ -25,17 +25,17 @@ pub struct DecryptedPasswordEntry {
     pub name: String,
     pub password: String,
     pub properties: HashMap<String, String>,
-    pub rest: String
+    pub rest: String,
 }
 
 pub struct PasswordStore {
-    store_dir: String
+    store_dir: String,
 }
 
 impl Clone for PasswordStore {
     fn clone(&self) -> Self {
         PasswordStore {
-            store_dir: self.store_dir.clone()
+            store_dir: self.store_dir.clone(),
         }
     }
 }
@@ -43,7 +43,7 @@ impl Clone for PasswordStore {
 impl PasswordStore {
     pub fn new(store_dir: &str) -> PasswordStore {
         PasswordStore {
-            store_dir: String::from(store_dir)
+            store_dir: String::from(store_dir),
         }
     }
 

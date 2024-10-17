@@ -3,7 +3,11 @@ mod ui;
 
 use crate::ui::app::{App, AppInit};
 use crate::ui::primary_menu::init_primary_menu_actions;
-use relm4::{main_application, RelmApp, gtk::{gio, gdk, prelude::*}, gtk};
+use relm4::{
+    gtk,
+    gtk::{gdk, gio, prelude::*},
+    main_application, RelmApp,
+};
 
 fn init_icons() {
     gio::resources_register_include!("icons.gresource")
@@ -31,5 +35,6 @@ fn main() {
     // Setup and start relm app
     let app = RelmApp::from_app(app);
 
-    app.visible_on_activate(false).run::<App>(AppInit { actions });
+    app.visible_on_activate(false)
+        .run::<App>(AppInit { actions });
 }

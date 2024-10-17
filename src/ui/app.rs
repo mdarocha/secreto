@@ -1,21 +1,21 @@
-use crate::ui::password_list_page::{PasswordListOutputs, PasswordListPage, PasswordListPageInit};
-use crate::ui::password_entry_page::{PasswordEntryPage, PasswordEntryPageInit};
-use crate::ui::primary_menu::WindowActionGroup;
 use crate::password_store::{PasswordEntry, PasswordStore};
+use crate::ui::password_entry_page::{PasswordEntryPage, PasswordEntryPageInit};
+use crate::ui::password_list_page::{PasswordListOutputs, PasswordListPage, PasswordListPageInit};
+use crate::ui::primary_menu::WindowActionGroup;
+use relm4::actions::RelmActionGroup;
 use relm4::adw;
 use relm4::adw::prelude::*;
 use relm4::prelude::*;
-use relm4::actions::RelmActionGroup;
 use std::collections::VecDeque;
 use std::env;
 
 pub enum Pages {
     PasswordListPage(Controller<PasswordListPage>),
-    PasswordEntryPage(Controller<PasswordEntryPage>)
+    PasswordEntryPage(Controller<PasswordEntryPage>),
 }
 
 pub struct AppInit {
-    pub actions: RelmActionGroup<WindowActionGroup>
+    pub actions: RelmActionGroup<WindowActionGroup>,
 }
 
 pub struct App {
@@ -87,15 +87,16 @@ impl Component for App {
                     .forward(sender.input_sender(), |message| match message {
                         PasswordListOutputs::OpenSubdir(subdir) => {
                             AppInputs::OpenPasswordsSubdir(subdir)
-                        },
+                        }
                         PasswordListOutputs::OpenEntry(entry) => {
                             AppInputs::OpenPasswordEntry(entry)
                         }
                     });
 
                 widgets.navigation_view.push(controller.widget());
-                self.password_views.push_back(Pages::PasswordListPage(controller));
-            },
+                self.password_views
+                    .push_back(Pages::PasswordListPage(controller));
+            }
             AppInputs::OpenPasswordEntry(entry) => {
                 let controller = PasswordEntryPage::builder()
                     .launch(PasswordEntryPageInit {
@@ -103,12 +104,13 @@ impl Component for App {
                         entry,
                     })
                     .forward(sender.input_sender(), |message| match message {
-                        _ => todo!()
+                        _ => todo!(),
                     });
 
                 widgets.navigation_view.push(controller.widget());
-                self.password_views.push_back(Pages::PasswordEntryPage(controller));
-            },
+                self.password_views
+                    .push_back(Pages::PasswordEntryPage(controller));
+            }
             AppInputs::PasswordViewClosed => {
                 self.password_views.pop_back();
             }

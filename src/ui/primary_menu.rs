@@ -1,8 +1,8 @@
 use relm4;
 use relm4::actions::AccelsPlus;
-use relm4::gtk::{Application, prelude::ApplicationExt};
-use relm4::gtk::gio::Menu;
 use relm4::actions::{RelmAction, RelmActionGroup};
+use relm4::gtk::gio::Menu;
+use relm4::gtk::{prelude::ApplicationExt, Application};
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
 relm4::new_stateless_action!(PreferencesAction, WindowActionGroup, "preferences");

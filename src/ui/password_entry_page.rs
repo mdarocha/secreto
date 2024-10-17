@@ -1,4 +1,4 @@
-use crate::password_store::{PasswordStore, PasswordEntry, DecryptedPasswordEntry};
+use crate::password_store::{DecryptedPasswordEntry, PasswordEntry, PasswordStore};
 use relm4::adw::prelude::*;
 use relm4::prelude::*;
 use relm4::{adw, gtk};
@@ -67,9 +67,19 @@ impl Component for PasswordEntryPage {
         }
     }
 
-    fn init(init: Self::Init, _root: Self::Root, _sender: ComponentSender<Self>) -> ComponentParts<Self> {
-        let password = init.store.decrypt(&init.entry).map_err(|err| err.to_string());
-        let model = PasswordEntryPage { name: init.entry.name.clone(), password };
+    fn init(
+        init: Self::Init,
+        _root: Self::Root,
+        _sender: ComponentSender<Self>,
+    ) -> ComponentParts<Self> {
+        let password = init
+            .store
+            .decrypt(&init.entry)
+            .map_err(|err| err.to_string());
+        let model = PasswordEntryPage {
+            name: init.entry.name.clone(),
+            password,
+        };
 
         let widgets = view_output!();
 

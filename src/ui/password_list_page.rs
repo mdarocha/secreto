@@ -1,4 +1,4 @@
-use crate::password_store::{PasswordItem, PasswordEntry, PasswordStore};
+use crate::password_store::{PasswordEntry, PasswordItem, PasswordStore};
 use crate::ui::password_item_view::PasswordItemViewOutputs;
 use crate::ui::primary_menu::primary_menu;
 use relm4::adw::prelude::*;
@@ -133,12 +133,12 @@ impl Component for PasswordListPage {
                         sender
                             .output(PasswordListOutputs::OpenSubdir(directory.path.clone()))
                             .expect("No receivers!");
-                    },
+                    }
                     Some(PasswordItem::Entry(entry)) => {
                         sender
                             .output(PasswordListOutputs::OpenEntry(entry.clone()))
                             .expect("No receivers!");
-                    },
+                    }
                     None => {}
                 }
             }
