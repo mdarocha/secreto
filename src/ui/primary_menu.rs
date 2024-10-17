@@ -1,9 +1,11 @@
+use crate::ui::about_dialog::AboutDialog;
 use relm4;
 use relm4::actions::AccelsPlus;
 use relm4::actions::{RelmAction, RelmActionGroup};
 use relm4::gtk;
 use relm4::gtk::gio::Menu;
 use relm4::gtk::prelude::ApplicationExt;
+use relm4::prelude::*;
 
 relm4::new_action_group!(pub WindowActionGroup, "win");
 relm4::new_stateless_action!(PreferencesAction, WindowActionGroup, "preferences");
@@ -49,7 +51,7 @@ where
         }));
 
         actions.add_action(RelmAction::<AboutAction>::new_stateless(move |_| {
-            todo!();
+            AboutDialog::builder().launch(()).detach();
         }));
 
         actions.add_action(RelmAction::<QuitAction>::new_stateless(move |_| {

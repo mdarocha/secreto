@@ -35,7 +35,7 @@ impl Component for App {
     view! {
         main_window = adw::ApplicationWindow {
             set_visible: true,
-            set_default_size: (800, 500),
+            set_default_size: (700, 600),
 
             #[name = "navigation_view"]
             adw::NavigationView {

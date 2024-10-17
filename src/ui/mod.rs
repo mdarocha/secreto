@@ -1,3 +1,4 @@
+pub mod about_dialog;
 pub mod app;
 pub mod app_page_template;
 pub mod password_entry_page;
