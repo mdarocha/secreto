@@ -1,6 +1,6 @@
 use crate::password_store::{PasswordEntry, PasswordItem, PasswordStore};
+use crate::ui::app_page_template::AppPageTemplate;
 use crate::ui::password_item_view::PasswordItemViewOutputs;
-use crate::ui::primary_menu::primary_menu;
 use relm4::adw::prelude::*;
 use relm4::factory::FactoryVecDeque;
 use relm4::prelude::*;
@@ -50,34 +50,14 @@ impl Component for PasswordListPage {
                 &model.subdir
             },
 
-            adw::ToolbarView {
-                set_top_bar_style: adw::ToolbarStyle::Raised,
-
-                add_top_bar = &adw::HeaderBar {
-                    pack_end = &gtk::MenuButton {
-                        set_icon_name: "open-menu-symbolic",
-                        set_menu_model: Some(&primary_menu())
-                    }
-                },
-
-                gtk::ScrolledWindow {
-                    set_vexpand: true,
-                    set_hscrollbar_policy: gtk::PolicyType::Never,
-
-                    adw::Clamp {
-                        gtk::Box {
-                            set_orientation: gtk::Orientation::Vertical,
-                            set_margin_top: 24,
-                            set_margin_bottom: 24,
-                            set_margin_start: 12,
-                            set_margin_end: 12,
-
-                            #[local_ref]
-                            password_list_widget -> gtk::ListBox {
-                                add_css_class: "boxed-list",
-                                set_selection_mode: gtk::SelectionMode::None
-                            }
-                        }
+            #[template]
+            AppPageTemplate {
+                #[template_child]
+                container {
+                    #[local_ref]
+                    password_list_widget -> gtk::ListBox {
+                        add_css_class: "boxed-list",
+                        set_selection_mode: gtk::SelectionMode::None
                     }
                 }
             }

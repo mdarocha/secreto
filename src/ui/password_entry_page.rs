@@ -1,4 +1,5 @@
 use crate::password_store::{DecryptedPasswordEntry, PasswordEntry, PasswordStore};
+use crate::ui::app_page_template::AppPageTemplate;
 use relm4::adw::prelude::*;
 use relm4::prelude::*;
 use relm4::{adw, gtk};
@@ -26,41 +27,26 @@ impl Component for PasswordEntryPage {
             #[watch]
             set_title: &model.name,
 
-            adw::ToolbarView {
-                set_top_bar_style: adw::ToolbarStyle::Raised,
+            #[template]
+            AppPageTemplate {
+                #[template_child]
+                container {
+                    match &model.password {
+                        Ok(password) =>
+                            gtk::ListBox {
+                                add_css_class: "boxed-list",
+                                set_selection_mode: gtk::SelectionMode::None,
 
-                add_top_bar = &adw::HeaderBar { },
-
-                gtk::ScrolledWindow {
-                    set_vexpand: true,
-                    set_hscrollbar_policy: gtk::PolicyType::Never,
-
-                    adw::Clamp {
-                        gtk::Box {
-                            set_orientation: gtk::Orientation::Vertical,
-                            set_margin_top: 24,
-                            set_margin_bottom: 24,
-                            set_margin_start: 12,
-                            set_margin_end: 12,
-
-                            match &model.password {
-                                Ok(password) =>
-                                    gtk::ListBox {
-                                        add_css_class: "boxed-list",
-                                        set_selection_mode: gtk::SelectionMode::None,
-
-                                        adw::ActionRow {
-                                            #[watch]
-                                            set_title: &password.password
-                                        }
-                                    },
-                                Err(err) =>
-                                    gtk::Label {
-                                        #[watch]
-                                        set_text: &err
-                                    }
+                                adw::ActionRow {
+                                    #[watch]
+                                    set_title: &password.password
+                                }
+                            },
+                        Err(err) =>
+                            gtk::Label {
+                                #[watch]
+                                set_text: &err
                             }
-                        }
                     }
                 }
             }
