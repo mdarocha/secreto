@@ -31,7 +31,7 @@ impl FactoryComponent for PasswordItem {
 
             add_prefix: &gtk::Image::from_icon_name(match self {
                 PasswordItem::Directory(_) => "folder-symbolic",
-                PasswordItem::Entry(_) => "key3-symbolic" // TODO add custom icon
+                PasswordItem::Entry(_) => "password-symbolic"
             }),
 
             connect_activated[sender, index] => move |_| { sender.output(PasswordItemViewOutputs::Clicked(index.current_index())).expect("No receivers!"); }

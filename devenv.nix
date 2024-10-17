@@ -10,6 +10,7 @@ in
     pango.dev
     libgpg-error.dev
     gpgme.dev
+    librsvg.dev
   ];
 
   languages.rust.enable = true;

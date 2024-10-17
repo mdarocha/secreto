@@ -9,6 +9,8 @@ panic = "abort"
 [profile.release]
 panic = "abort"
 
+[build-dependencies]
+glib-build-tools = "0.20.0"
 
 [dependencies]
 gpgme = "0.11.0"
