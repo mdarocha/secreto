@@ -1,15 +1,21 @@
 use crate::ui::password_list_page::{PasswordListOutputs, PasswordListPage, PasswordListPageInit};
 use crate::ui::password_entry_page::{PasswordEntryPage, PasswordEntryPageInit};
+use crate::ui::primary_menu::WindowActionGroup;
 use crate::password_store::{PasswordEntry, PasswordStore};
 use relm4::adw;
 use relm4::adw::prelude::*;
 use relm4::prelude::*;
+use relm4::actions::RelmActionGroup;
 use std::collections::VecDeque;
 use std::env;
 
 pub enum Pages {
     PasswordListPage(Controller<PasswordListPage>),
     PasswordEntryPage(Controller<PasswordEntryPage>)
+}
+
+pub struct AppInit {
+    pub actions: RelmActionGroup<WindowActionGroup>
 }
 
 pub struct App {
@@ -26,13 +32,14 @@ pub enum AppInputs {
 
 #[relm4::component(pub)]
 impl Component for App {
-    type Init = ();
+    type Init = AppInit;
     type Input = AppInputs;
     type Output = ();
     type CommandOutput = ();
 
     view! {
-        adw::ApplicationWindow {
+        main_window = adw::ApplicationWindow {
+            set_visible: true,
             set_default_size: (800, 500),
 
             #[name = "navigation_view"]
@@ -43,7 +50,7 @@ impl Component for App {
     }
 
     fn init(
-        _init: Self::Init,
+        init: Self::Init,
         _root: Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
@@ -54,7 +61,9 @@ impl Component for App {
             store: PasswordStore::new(&store_dir),
             password_views: VecDeque::new(),
         };
+
         let widgets = view_output!();
+        init.actions.register_for_widget(&widgets.main_window);
 
         sender.input(AppInputs::OpenPasswordsSubdir(String::from(".")));
 

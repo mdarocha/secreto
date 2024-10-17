@@ -1,5 +1,6 @@
 use crate::password_store::{PasswordItem, PasswordEntry, PasswordStore};
 use crate::ui::password_item_view::PasswordItemViewOutputs;
+use crate::ui::primary_menu::primary_menu;
 use relm4::adw::prelude::*;
 use relm4::factory::FactoryVecDeque;
 use relm4::prelude::*;
@@ -52,7 +53,12 @@ impl Component for PasswordListPage {
             adw::ToolbarView {
                 set_top_bar_style: adw::ToolbarStyle::Raised,
 
-                add_top_bar = &adw::HeaderBar { },
+                add_top_bar = &adw::HeaderBar {
+                    pack_end = &gtk::MenuButton {
+                        set_icon_name: "open-menu-symbolic",
+                        set_menu_model: Some(&primary_menu())
+                    }
+                },
 
                 gtk::ScrolledWindow {
                     set_vexpand: true,

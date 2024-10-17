@@ -1,8 +1,9 @@
 mod password_store;
 mod ui;
 
-use crate::ui::app;
-use relm4::{prelude::*, gtk::{gio, gdk}, gtk};
+use crate::ui::app::{App, AppInit};
+use crate::ui::primary_menu::init_primary_menu_actions;
+use relm4::{main_application, RelmApp, gtk::{gio, gdk, prelude::*}, gtk};
 
 fn init_icons() {
     gio::resources_register_include!("icons.gresource")
@@ -14,9 +15,21 @@ fn init_icons() {
 }
 
 fn main() {
-    let app = RelmApp::new("pl.mdarocha.Secreto");
+    // Init GTK
+    gtk::init().unwrap();
 
+    // Init GTK application
+    let app = main_application();
+    app.set_application_id(Some("pl.mdarocha.Secreto"));
+
+    // Init icons
     init_icons();
 
-    app.run::<app::App>(());
+    // Init actions
+    let actions = init_primary_menu_actions(&app);
+
+    // Setup and start relm app
+    let app = RelmApp::from_app(app);
+
+    app.visible_on_activate(false).run::<App>(AppInit { actions });
 }
