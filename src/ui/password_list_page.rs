@@ -44,7 +44,7 @@ impl Component for PasswordListPage {
         adw::NavigationPage {
             #[watch]
             set_title: if &model.subdir == "." {
-                env!("APP_NAME")
+                "Secreto"
             } else {
                 &model.subdir
             },
