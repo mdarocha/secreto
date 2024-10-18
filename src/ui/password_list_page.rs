@@ -133,9 +133,20 @@ impl Component for PasswordListPage {
     ) {
         match message {
             PasswordListCommands::PasswordListLoaded(password_list) => {
-                let mut guard = self.passwords.guard();
-                for password in password_list {
-                    guard.push_back(password);
+                {
+                    let mut guard = self.passwords.guard();
+                    for password in password_list {
+                        guard.push_back(password);
+                    }
+                }
+                // focus on the first item
+                if let Some(window) = relm4::main_application().active_window() {
+                    if let Some(root) = window.root() {
+                        let listbox = self.passwords.widget();
+                        if let Some(first_row) = listbox.first_child() {
+                            root.set_focus(Some(&first_row));
+                        }
+                    }
                 }
             }
         }
