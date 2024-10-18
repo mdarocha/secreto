@@ -5,7 +5,7 @@ use relm4::loading_widgets::LoadingWidgets;
 use relm4::prelude::*;
 use relm4::tokio::task::spawn_blocking;
 use relm4::view;
-use relm4::{adw, gtk};
+use relm4::{adw, gtk, gtk::gdk};
 
 pub struct PasswordEntryPageInit {
     pub store: PasswordStore,
@@ -17,10 +17,15 @@ pub struct PasswordEntryPage {
     password: Result<DecryptedPasswordEntry, String>,
 }
 
+#[derive(Debug)]
+pub enum PasswordEntryPageInputs {
+    RequestCopy(String),
+}
+
 #[relm4::component(pub, async)]
 impl AsyncComponent for PasswordEntryPage {
     type Init = PasswordEntryPageInit;
-    type Input = ();
+    type Input = PasswordEntryPageInputs;
     type Output = ();
     type CommandOutput = ();
 
@@ -44,12 +49,7 @@ impl AsyncComponent for PasswordEntryPage {
                                     add_suffix: copy_button = &gtk::Button {
                                         add_css_class: "flat",
                                         set_valign: gtk::Align::Center,
-
-                                        set_icon_name: "edit-copy-symbolic",
-
-                                        connect_clicked[_sender] => move |_| {
-                                            println!("copying password");
-                                        }
+                                        set_icon_name: "edit-copy-symbolic"
                                     }
                                 }
                             },
@@ -91,7 +91,7 @@ impl AsyncComponent for PasswordEntryPage {
     async fn init(
         init: Self::Init,
         _root: Self::Root,
-        _sender: AsyncComponentSender<Self>,
+        sender: AsyncComponentSender<Self>,
     ) -> AsyncComponentParts<Self> {
         let password = {
             let store = init.store.clone();
@@ -108,14 +108,43 @@ impl AsyncComponent for PasswordEntryPage {
 
         let widgets = view_output!();
 
+        // connect signals, since due to limitations we can't do this in the view! macro
+        {
+            let sender = sender.clone();
+            let password = match &model.password {
+                Ok(entry) => entry.password.clone(),
+                Err(_) => String::new(),
+            };
+            widgets.copy_button.connect_clicked(move |_| {
+                sender.input(PasswordEntryPageInputs::RequestCopy(password.clone()));
+            });
+        }
+
         // focus the copy button at init
         if let Some(window) = relm4::main_application().active_window() {
             if let Some(root) = window.root() {
                 root.set_focus(Some(&widgets.copy_button));
-                widgets.copy_button.grab_focus();
             }
         }
 
         AsyncComponentParts { model, widgets }
+    }
+
+    async fn update(
+        &mut self,
+        message: Self::Input,
+        _sender: AsyncComponentSender<Self>,
+        _root: &Self::Root,
+    ) {
+        match message {
+            PasswordEntryPageInputs::RequestCopy(text) => {
+                // TODO move this to another file/service tc.
+                // TODO use a better way to copy that can remove the
+                // copied password (ie. wl-clipboard)
+                println!("Copying to clipboard");
+                let clipboard = gdk::Display::default().unwrap().clipboard();
+                clipboard.set_text(&text);
+            }
+        }
     }
 }
