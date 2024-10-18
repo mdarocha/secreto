@@ -10,7 +10,7 @@ use std::env;
 
 pub enum Pages {
     PasswordListPage(Controller<PasswordListPage>),
-    PasswordEntryPage(Controller<PasswordEntryPage>),
+    PasswordEntryPage(AsyncController<PasswordEntryPage>),
 }
 
 pub struct App {

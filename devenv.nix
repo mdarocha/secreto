@@ -4,7 +4,7 @@ let
   pkgs-unstable = import inputs.nixpkgs-unstable { system = pkgs.stdenv.system; };
 in
 {
-  env.VERSION = "local";
+  env.VERSION = "0.0.0-local";
 
   packages = with pkgs-unstable; [
     gtk4.dev
