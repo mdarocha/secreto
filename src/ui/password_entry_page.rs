@@ -45,6 +45,7 @@ impl AsyncComponent for PasswordEntryPage {
                                     set_title: "Password",
                                     #[watch]
                                     set_text: &password.password,
+                                    set_editable: false,
 
                                     add_suffix: copy_button = &gtk::Button {
                                         add_css_class: "flat",
